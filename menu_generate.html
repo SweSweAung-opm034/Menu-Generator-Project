@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<link rel="stylesheet" type="text/css" href="css/bulma.css">
+</head>
+<body>
+<div class="container">
+	<div class="field is-grouped">
+		<p class="control">
+			<input class="input" type="text" placeholder="Add Menu" id="menu" name="menu" >
+		</p>
+
+		<p class="control">
+			<a class="button is-info" id="add">
+				Add Menu
+			</a>
+		</p>
+	</div>
+	<div class="content">
+		<ol class="sortable">
+			<ul id="items"></ul>
+
+		</ol>
+	</div> 
+				   
+	<button type="button" id="save" class="button is-primary">Save</button>
+	<button type="button" id="preview" class="button is-primary">preview</button>
+	<!-- <button type="button" id="clear" class="button is-primary">clear</button> -->
+</div>
+<!-- <li style="display:none" class="menu-template"><span class="taskname"></span><a href="#" onclick="remove()">Delete</a></li> -->
+<!-- <div id="show"></div> -->
+</body>
+</html>
+<script src="js/jquery-1.11.0.min.js"></script>
+<script src="js/jquery-ui-1.10.4.min.js"></script>
+<script type="text/javascript" src="js/jquery.mjs.nestedSortable.js"></script>
+<script>
+		$(document).ready(function() {
+			$("#items").html(localStorage.getItem("store"));
+			// var sto= JSON.stringify(localStorage.getItem("store"));
+			// $("#items").html(sto);
+
+
+				$("#add").click(function() {
+				var get_menu = $("#menu").val();
+
+								
+				menuList(get_menu).appendTo("#items");
+				
+				$("h1 span").html( $("#items li").length );
+				$("#menu").val("").focus();
+			});
+
+			$("#menu").keydown(function(e) {
+				if(e.which == 13)
+				$("#add").click();
+			});
+
+			$("#save").click(function(){
+				// var item = $('#items').html();
+				// localStorage.setItem('store_item', item);
+				// alert("Your items are saved");
+				// var texts = [];
+				// lis = document.getElementsByTagName("li");
+				// for(var i=0; i<lis.length; i++)
+				// 	texts.push(lis[i].firstChild.nodeValue);
+				// console.log(texts);
+
+				//arry for parent and child
+				var arr = [];
+				$("#items>li").each(function() {
+				    var elem = {
+				        main: $(this).find(">span:first").text(),
+				        child: [],
+				        grand_child: [],
+				    };
+				    $(this).find(">ol>li>span").each(function() {
+				        elem.child.push($(this).text());
+				    });
+				  
+
+				    $(this).find(">ol>li>ol>li>span").each(function() {
+				        elem.grand_child.push($(this).text());
+				    });
+
+				    arr.push(elem);
+				  
+
+				});
+				// alert(arr);
+				for(var i=0; i<arr.length; i++)
+				{
+
+				// alert(arr[i].main);
+						for(var j=0; j<arr[i].child.length; j++){
+
+								// alert(arr[i].child[j]);
+							
+						}
+						for(var k=0; k<arr[i].grand_child.length; k++){
+									if(arr[i].grand_child[0]!=null){
+										// alert(arr[i].child2[k]);
+								}
+							}
+								
+				}
+		
+
+				localStorage.setItem("store",JSON.stringify(arr));
+
+				// localStorage.setItem("store", arr);
+				console.log(arr);
+				alert("Your items are saved");
+
+			}); //save
+	
+			$("#preview").click(function(){
+				if(localStorage.getItem('store')) {
+					
+				// $("#show").html(localStorage.getItem('store'));
+				// var sname=localStorage.getItem('store');
+				// $("#show").html(sname);
+				window.location.href="show.html";
+				
+				}
+				
+			}); //preview
+
+			// $('#clear').click( function() {
+			// window.localStorage.clear();
+			// location.reload();
+			// return false;
+			// });
+			
+		});//ready function
+
+
+	    function menuList(msg) {
+		
+			var menu_list = $("<span>").text(msg);
+			var del = "<a class='delete' onClick='remove()'></a>";
+			
+			$("h1 span").html( $("#items li").length );
+			return $("<li>").append(menu_list).append(del);
+	    }
+
+	    function remove(){
+	    	
+			// $(this).remove();
+			// $("h1 span").html( $("#items li").length );
+				
+	    }
+			
+		$('.sortable').nestedSortable({
+
+				items: 'li',
+				maxLevels: 3,
+
+			});
+</script>
